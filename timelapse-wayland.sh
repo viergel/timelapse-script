@@ -6,8 +6,6 @@ MONITORS=$(xrandr --query | rg connected | awk '{print $1}')
 START_TIME=$(date '+%Y-%m-%d')
 BASE_PATH="$HOME/Videos/Timelapse/$START_TIME"
 
-frame_count=0
-
 mkdir -p "$BASE_PATH"
 
 for monitor in $MONITORS; do
@@ -36,8 +34,6 @@ while true; do
     exit 0
   fi
 
-  ((frame_count++))
-
   timestamp=$(date +%s)
 
   for monitor in $MONITORS; do
@@ -49,6 +45,8 @@ while true; do
   if [ ! -f "$BASE_PATH/webcam/$timestamp.jpg" ]; then
     ffmpeg -f lavfi -i color=black:size=1280x720 -frames:v 1 "$BASE_PATH/webcam/$timestamp.jpg"
   fi
+
+  frame_count=$(ls "$BASE_PATH/webcam/*.jpg" | wc - l)
 
   if ((frame_count % 60 == 0)); then
     for monitor in $MONITORS; do
