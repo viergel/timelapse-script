@@ -28,7 +28,7 @@ if [ ! -f "$BASE_PATH/.files.txt" ]; then
 fi
 
 while true; do
-  last=$(pgrep -f basename "$0")
+  last=$(pgrep -f "$(basename "$0")")
   last=$(printf '%s\n' "$last" | tail -n1)
   if [ -n "$last" ] && [ "$$" -ne "$last" ]; then
     exit 0
@@ -46,7 +46,7 @@ while true; do
     ffmpeg -f lavfi -i color=black:size=1280x720 -frames:v 1 "$BASE_PATH/webcam/$timestamp.jpg"
   fi
 
-  frame_count=$(ls "$BASE_PATH/webcam/*.jpg" | wc - l)
+  frame_count=$(ls "$BASE_PATH"/webcam/*.jpg | wc -l)
 
   if ((frame_count % 60 == 0)); then
     for monitor in $MONITORS; do
