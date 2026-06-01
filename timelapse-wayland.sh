@@ -10,21 +10,21 @@ mkdir -p "$BASE_PATH"
 
 for monitor in $MONITORS; do
   mkdir -p "$BASE_PATH/$monitor"
-  if [ ! -f "$BASE_PATH/$monitor/files.txt" ]; then
-    echo "file 'temp-1.mp4'" >>"$BASE_PATH/$monitor/files.txt"
-    echo "file 'temp-2.mp4'" >>"$BASE_PATH/$monitor/files.txt"
+  if [ ! -f "$BASE_PATH/$monitor/.files.txt" ]; then
+    echo "file 'temp-1.mp4'" >>"$BASE_PATH/$monitor/.files.txt"
+    echo "file 'temp-2.mp4'" >>"$BASE_PATH/$monitor/.files.txt"
   fi
 done
 
 mkdir -p "$BASE_PATH/webcam"
-if [ ! -f "$BASE_PATH/webcam/files.txt" ]; then
-  echo "file 'temp-1.mp4'" >>"$BASE_PATH/webcam/files.txt"
-  echo "file 'temp-2.mp4'" >>"$BASE_PATH/webcam/files.txt"
+if [ ! -f "$BASE_PATH/webcam/.files.txt" ]; then
+  echo "file 'temp-1.mp4'" >>"$BASE_PATH/webcam/.files.txt"
+  echo "file 'temp-2.mp4'" >>"$BASE_PATH/webcam/.files.txt"
 fi
 
-if [ ! -f "$BASE_PATH/files.txt" ]; then
-  echo "file 'temp-1.mp4'" >>"$BASE_PATH/files.txt"
-  echo "file 'temp-2.mp4'" >>"$BASE_PATH/files.txt"
+if [ ! -f "$BASE_PATH/.files.txt" ]; then
+  echo "file 'temp-1.mp4'" >>"$BASE_PATH/.files.txt"
+  echo "file 'temp-2.mp4'" >>"$BASE_PATH/.files.txt"
 fi
 
 while true; do
@@ -61,7 +61,7 @@ while true; do
 
       mv -f "$BASE_PATH/$monitor.mp4" "$BASE_PATH/$monitor/temp-1.mp4"
 
-      ffmpeg -f concat -safe 0 -i "$BASE_PATH/$monitor/files.txt" -c copy "$BASE_PATH/$monitor.mp4"
+      ffmpeg -f concat -safe 0 -i "$BASE_PATH/$monitor/.files.txt" -c copy "$BASE_PATH/$monitor.mp4"
     done
 
     ffmpeg -y -framerate 60 -pattern_type glob -i "$BASE_PATH/webcam/*.jpg" -c:v libx264 -pix_fmt yuv420p "$BASE_PATH/webcam/temp-2.mp4"
@@ -75,7 +75,7 @@ while true; do
 
     mv -f "$BASE_PATH/webcam.mp4" "$BASE_PATH/webcam/temp-1.mp4"
 
-    ffmpeg -f concat -safe 0 -i "$BASE_PATH/webcam/files.txt" -c copy "$BASE_PATH/webcam.mp4"
+    ffmpeg -f concat -safe 0 -i "$BASE_PATH/webcam/.files.txt" -c copy "$BASE_PATH/webcam.mp4"
 
     if [ ! -f "$BASE_PATH/result.mp4" ]; then
       ffmpeg -y -i "$BASE_PATH/HDMI-A-1.mp4" -i "$BASE_PATH/webcam.mp4" -i "$BASE_PATH/eDP-1.mp4" -filter_complex "\
@@ -99,7 +99,7 @@ while true; do
 
     mv -f "$BASE_PATH/result.mp4" "$BASE_PATH/temp-1.mp4"
 
-    ffmpeg -f concat -safe 0 -i "$BASE_PATH/files.txt" -c copy "$BASE_PATH/result.mp4"
+    ffmpeg -f concat -safe 0 -i "$BASE_PATH/.files.txt" -c copy "$BASE_PATH/result.mp4"
 
     for monitor in $MONITORS; do
       rm "$BASE_PATH/$monitor/temp-1.mp4"
