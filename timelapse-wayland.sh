@@ -4,7 +4,7 @@ set -e
 
 trap 'echo "Terminating timelapse..."; exit 0' TERM HUP INT
 
-MONITORS=$(xrandr --query | rg connected | awk '{print $1}')
+MONITORS=$(xrandr --query | grep connected | awk '{print $1}')
 START_TIME=$(date '+%Y-%m-%d')
 BASE_PATH="$HOME/Videos/Timelapse/$START_TIME"
 
