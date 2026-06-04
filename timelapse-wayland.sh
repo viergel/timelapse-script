@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 trap 'echo "Terminating timelapse..."; exit 0' TERM HUP INT
 
 MONITORS=$(xrandr --query | rg connected | awk '{print $1}')
@@ -28,12 +30,6 @@ if [ ! -f "$BASE_PATH/.files.txt" ]; then
 fi
 
 while true; do
-  last=$(pgrep -f "$(basename "$0")")
-  last=$(printf '%s\n' "$last" | tail -n1)
-  if [ -n "$last" ] && [ "$$" -ne "$last" ]; then
-    exit 0
-  fi
-
   timestamp=$(date +%s)
 
   for monitor in $MONITORS; do
