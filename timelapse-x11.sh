@@ -2,7 +2,7 @@
 
 set -e
 
-trap 'echo "Terminating timelapse..."; exit 0' TERM HUP INT
+trap 'echo "Terminating timelapse..."; rm -rf "$BASE_PATH/eDP-1"; rm -rf "$BASE_PATH/HDMI-A-1"; rm -rf "$BASE_PATH/webcam"; exit 0' TERM HUP INT
 
 MONITORS=$(xrandr --query | grep connected | awk '{print $1}' | head -n 1)
 START_TIME=$(date '+%Y-%m-%d')
