@@ -4,9 +4,10 @@ set -e
 
 trap 'echo "Terminating timelapse..."; rm -rf "$BASE_PATH/eDP-1"; rm -rf "$BASE_PATH/HDMI-A-1"; rm -rf "$BASE_PATH/webcam"; exit 0' TERM HUP INT
 
-MONITORS=$(xrandr --query | grep connected | awk '{print $1}')
+MONITORS="eDP-1 HDMI-A-1"
 START_TIME=$(date '+%Y-%m-%d')
 BASE_PATH="$HOME/Videos/Timelapse/$START_TIME"
+SLEEP_TIME=10
 
 mkdir -p "$BASE_PATH"
 
@@ -33,7 +34,7 @@ while true; do
   timestamp=$(date +%s)
 
   for monitor in $MONITORS; do
-    grim -o "$monitor" "$BASE_PATH/$monitor/$timestamp.png" 2>/dev/null
+    grim -o "$monitor" "$BASE_PATH/$monitor/$timestamp.png" 2>/dev/null | true
 
     if [ ! -f "$BASE_PATH/$monitor/$timestamp.png" ]; then
       ffmpeg -loglevel error -stats \
@@ -46,7 +47,7 @@ while true; do
     -f v4l2 -input_format mjpeg \
     -video_size 1280x720 -i /dev/video0 \
     -frames:v 1 -c:v copy \
-    -f image2 -update 1 "$BASE_PATH/webcam/$timestamp.jpg"
+    -f image2 -update 1 "$BASE_PATH/webcam/$timestamp.jpg" 2>/dev/null | true
 
   if [ ! -f "$BASE_PATH/webcam/$timestamp.jpg" ]; then
     ffmpeg -loglevel error -stats \
@@ -106,7 +107,7 @@ while true; do
         -map "[outv]" -map 0:a? \
         -c:v libx264 -crf 18 -preset veryfast \
         -c:a aac -shortest "$BASE_PATH/result.mp4"
-      sleep 5
+      sleep "$SLEEP_TIME"
       continue
     fi
 
@@ -137,5 +138,5 @@ while true; do
     rm "$BASE_PATH/temp-2.mp4"
   fi
 
-  sleep 5
+  sleep "$SLEEP_TIME"
 done
